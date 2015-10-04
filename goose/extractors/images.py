@@ -20,10 +20,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import absolute_import
 import re
 import os
 
-from urlparse import urlparse, urljoin
+if sys.version_info < (3,):
+    from urlparse import urlparse, urljoin
+else:
+    from urllib.parse import urlparse, urljoin
 
 from goose.extractors import BaseExtractor
 from goose.image import Image
@@ -117,7 +121,7 @@ class ImageExtractor(BaseExtractor):
         if good_images:
             scored_images = self.fetch_images(good_images, parent_depth_level)
             if scored_images:
-                highscore_image = sorted(scored_images.items(),
+                highscore_image = sorted(list(scored_images.items()),
                                         key=lambda x: x[1], reverse=True)[0][0]
                 main_image = Image()
                 main_image.src = highscore_image.src
@@ -352,7 +356,7 @@ class ImageExtractor(BaseExtractor):
           are on specific sites
         """
         domain = self.get_clean_domain()
-        if domain in self.custom_site_mapping.keys():
+        if domain in list(self.custom_site_mapping.keys()):
             classes = self.custom_site_mapping.get(domain).split('|')
             for classname in classes:
                 KNOWN_IMG_DOM_NAMES.append(classname)
