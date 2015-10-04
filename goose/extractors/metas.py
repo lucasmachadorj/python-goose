@@ -21,9 +21,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from __future__ import absolute_import
 import re
-from urlparse import urljoin
-from urlparse import urlparse
+import sys
+
+if sys.version_info < (3,):
+    from urlparse import urljoin, urlparse
+else:
+    from urllib.parse import urlparse, urljoin
+
 
 from goose.extractors import BaseExtractor
 
