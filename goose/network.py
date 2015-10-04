@@ -53,23 +53,24 @@ class HtmlFetcher(object):
             if isinstance(url, six.text_type):
                 url = url.encode('utf-8')
         # set request
-        try:
+        if sys.version_info < (3, ):
             self.request = urllib2.Request(
                             url,
                             headers=self.headers)
-        except ImportError:
+        else:
             self.request = urllib.request.Request(
                             url,
                             headers=self.headers)
         # do request
         try:
-            self.result = urllib2.urlopen(
-                            self.request,
-                            timeout=self.config.http_timeout)
-        except ImportError:
-            self.request = urllib.request.urlopen(
-                            self.request,
-                            timeout=self.config.http_timeout)
+            if sys.version_info < (3, ):
+                self.result = urllib2.urlopen(
+                                self.request,
+                                timeout=self.config.http_timeout)
+            else
+                self.request = urllib.request.urlopen(
+                                self.request,
+                                timeout=self.config.http_timeout)
         except Exception:
             self.result = None
 
