@@ -67,7 +67,7 @@ class HtmlFetcher(object):
                 self.result = urllib2.urlopen(
                                 self.request,
                                 timeout=self.config.http_timeout)
-            else
+            else:
                 self.request = urllib.request.urlopen(
                                 self.request,
                                 timeout=self.config.http_timeout)
