@@ -20,9 +20,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import absolute_import
 import hashlib
 import os
-import urllib2
+import sys
+
+if sys.version_info < (3,):
+    import urllib2
+else:
+    import urllib.request
+
+
 from PIL import Image
 from goose.utils.encoding import smart_str
 from goose.image import ImageDetails
@@ -117,6 +125,12 @@ class ImageUtils(object):
         try:
             req = urllib2.Request(src)
             f = urllib2.urlopen(req)
+        except ImportError:
+            req = urllib.request(src)
+            f = urllib.request.urlopen(req)
+        except Exception:
+            return None
+        try:
             data = f.read()
             return data
         except Exception:
