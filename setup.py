@@ -40,6 +40,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 2',
     'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
     'Topic :: Internet',
     'Topic :: Utilities',
     'Topic :: Software Development :: Libraries :: Python Modules']
@@ -66,6 +67,6 @@ setup(name='goose-extractor',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    install_requires=['Pillow', 'lxml', 'cssselect', 'jieba', 'beautifulsoup4', 'nltk'],
+    install_requires=['Pillow', 'lxml', 'cssselect', 'jieba', 'beautifulsoup4', 'nltk', 'six'],
     test_suite="tests"
 )
