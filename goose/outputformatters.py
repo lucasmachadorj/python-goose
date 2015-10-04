@@ -20,7 +20,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from HTMLParser import HTMLParser
+
+from __future__ import absolute_import
+import sys
+
+if sys.version_info < (3,):
+    from HTMLParser import HTMLParser
+else:
+    from html.parser import HTMLParser
+
 from goose.text import innerTrim
 
 
