@@ -23,6 +23,7 @@ limitations under the License.
 from __future__ import absolute_import
 import re
 import os
+import sys
 
 if sys.version_info < (3,):
     from urlparse import urlparse, urljoin
