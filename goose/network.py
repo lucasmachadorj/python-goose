@@ -23,11 +23,11 @@ limitations under the License.
 
 from __future__ import absolute_import
 import sys
+import six
 
 if sys.version_info < (3,):
     import urllib2
 else:
-    import six
     import urllib.request
 
 class HtmlFetcher(object):
@@ -47,7 +47,7 @@ class HtmlFetcher(object):
     def get_html(self, url):
         # utf-8 encode unicode url
         try:
-            if isinstance(url, unicode):
+            if isinstance(url, six.text_type):
                 url = url.encode('utf-8')
         except ImportError:
             if isinstance(url, six.text_type):
