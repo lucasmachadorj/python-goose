@@ -97,8 +97,8 @@ class ParsingCandidate(object):
 class RawHelper(object):
     @classmethod
     def get_parsing_candidate(self, url, raw_html):
-        # if isinstance(raw_html, six.text_type):
-        raw_html = raw_html.encode('utf-8')
+        if isinstance(raw_html, six.text_type):
+            raw_html = raw_html.encode('utf-8')
         link_hash = '{0}.{1}'.format(hashlib.md5(raw_html).hexdigest(), time.time())
         return ParsingCandidate(url, link_hash)
 
@@ -109,6 +109,7 @@ class URLHelper(object):
         # replace shebang is urls
         final_url = url_to_crawl.replace('#!', '?_escaped_fragment_=') \
                     if '#!' in url_to_crawl else url_to_crawl
+        final_url = final_url.encode('utf-8')
         link_hash = '{0}.{1}'.format(hashlib.md5(final_url).hexdigest(), time.time())
         return ParsingCandidate(final_url, link_hash)
 
