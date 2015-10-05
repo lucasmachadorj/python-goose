@@ -5,7 +5,8 @@ import types
 import datetime
 from decimal import Decimal
 
-
+if sys.version_info > (3,):
+    import six
 
 class DjangoUnicodeDecodeError(UnicodeDecodeError):
     def __init__(self, obj, *args):
