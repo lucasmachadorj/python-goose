@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+import sys
 import types
 import datetime
 from decimal import Decimal
-import six
+
 
 
 class DjangoUnicodeDecodeError(UnicodeDecodeError):
@@ -64,20 +65,37 @@ def force_unicode(s, encoding='utf-8', strings_only=False, errors='strict'):
     # Handle the common case first, saves 30-40% in performance when s
     # is an instance of unicode. This function gets called often in that
     # setting.
-    if isinstance(s, six.text_type):
-        return s
+    if sys.version_info > (3,):
+        if isinstance(s, six.text_type):
+            return s
+    else:
+        if isinstance(s, unicode):
+            return s
     if strings_only and is_protected_type(s):
         return s
     try:
-        if not isinstance(s, six.string_types,):
-            if hasattr(s, '__unicode__'):
-                s = six.text_type(s)
-            else:
-                try:
-                    s = six.text_type(str(s), encoding, errors)
-                except UnicodeEncodeError:
-                    if not isinstance(s, Exception):
-                        raise
+        if sys.version_info > (3,):
+            if not isinstance(s, six.string_types,):
+                if hasattr(s, '__unicode__'):
+                    s = six.text_type(s)
+                else:
+                    try:
+                        s = six.text_type(str(s), encoding, errors)
+                    except UnicodeEncodeError:
+                        if not isinstance(s, Exception):
+                            raise
+            elif not isinstance(s, six.text_type):
+                s = s.decode(encoding, errors)
+        else:
+            if not isinstance(s, basestring,):
+                if hasattr(s, '__unicode__'):
+                    s = unicode(s)
+                else:
+                    try:
+                        s = unicode(str(s), encoding, errors)
+                    except UnicodeEncodeError:
+                        if not isinstance(s, Exception):
+                            raise
                     # If we get to here, the caller has passed in an Exception
                     # subclass populated with non-ASCII data without special
                     # handling to display as a string. We need to handle this
@@ -86,11 +104,12 @@ def force_unicode(s, encoding='utf-8', strings_only=False, errors='strict'):
                     # output should be.
                     s = u' '.join([force_unicode(arg, encoding, strings_only,
                             errors) for arg in s])
-        elif not isinstance(s, six.text_type):
-            # Note: We use .decode() here, instead of unicode(s, encoding,
-            # errors), so that if s is a SafeString, it ends up being a
-            # SafeUnicode at the end.
-            s = s.decode(encoding, errors)
+
+            elif not isinstance(s, unicode):
+                # Note: We use .decode() here, instead of unicode(s, encoding,
+                # errors), so that if s is a SafeString, it ends up being a
+                # SafeUnicode at the end.
+                s = s.decode(encoding, errors)
     except UnicodeDecodeError as e:
         if not isinstance(s, Exception):
             raise DjangoUnicodeDecodeError(s, *e.args)

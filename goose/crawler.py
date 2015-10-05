@@ -21,6 +21,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import os
+import sys
 import glob
 from copy import deepcopy
 from goose.article import Article
@@ -116,6 +117,8 @@ class Crawler(object):
         # raw html
         raw_html = self.get_html(crawl_candidate, parse_candidate)
 
+        if sys.version_info >= (3,):
+            raw_html = raw_html.decode('utf8')
         if raw_html is None:
             return self.article
 
@@ -128,7 +131,6 @@ class Crawler(object):
         self.article.raw_html = raw_html
         self.article.doc = doc
         self.article.raw_doc = deepcopy(doc)
-
         # open graph
         self.article.opengraph = self.opengraph_extractor.extract()
 
@@ -152,14 +154,12 @@ class Crawler(object):
 
         # title
         self.article.title = self.title_extractor.extract()
-
         # check for known node as content body
         # if we find one force the article.doc to be the found node
         # this will prevent the cleaner to remove unwanted text content
         article_body = self.extractor.get_known_article_tags()
         if article_body is not None:
             self.article.doc = article_body
-
         # before we do any calcs on the body itself let's clean up the document
         self.article.doc = self.cleaner.clean()
 
@@ -185,7 +185,6 @@ class Crawler(object):
 
             # post cleanup
             self.article.top_node = self.extractor.post_cleanup()
-
             # clean_text
             self.article.cleaned_text = self.formatter.get_formatted_text()
 

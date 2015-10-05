@@ -21,7 +21,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import re
-
+import sys
 from goose.extractors import BaseExtractor
 
 
@@ -43,6 +43,8 @@ class TitleExtractor(BaseExtractor):
 
         # try to remove the domain from url
         if self.article.domain:
+            if sys.version_info >= (3,):
+                self.article.domain = self.article.domain.decode('utf-8')
             pattern = re.compile(self.article.domain, re.IGNORECASE)
             title = pattern.sub("", title).strip()
 

@@ -22,7 +22,6 @@ limitations under the License.
 """
 from __future__ import absolute_import
 import sys
-import six
 import os
 import re
 import string
@@ -31,16 +30,27 @@ from goose.utils.encoding import smart_unicode
 from goose.utils.encoding import smart_str
 from goose.utils.encoding import DjangoUnicodeDecodeError
 
+if sys.version_info >= (3,):
+    import six
+
 TABSSPACE = re.compile(r'[\s\t]+')
 
 
 def innerTrim(value):
-    if isinstance(value, (six.text_type, str)):
-        # remove tab and white space
-        value = re.sub(TABSSPACE, ' ', value)
-        value = ''.join(value.splitlines())
-        return value.strip()
-    return ''
+    if sys.version_info < (3,):
+        if isinstance(value, (unicode, str)):
+            # remove tab and white space
+            value = re.sub(TABSSPACE, ' ', value)
+            value = ''.join(value.splitlines())
+            return value.strip()
+        return ''
+    else:
+        if isinstance(value, (six.text_type, str)):
+            # remove tab and white space
+            value = re.sub(TABSSPACE, ' ', value)
+            value = ''.join(value.splitlines())
+            return value.strip()
+        return ''
 
 
 def encodeValue(value):
@@ -109,12 +119,16 @@ class StopWords(object):
             self._cached_stop_words[language] = set(word_list)
         self.STOP_WORDS = self._cached_stop_words[language]
 
+    # analisar
     def remove_punctuation(self, content):
         # code taken form
         # http://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
-        if isinstance(content, six.text_type):
-            content = content.encode('utf-8')
-        return content.translate(self.TRANS_TABLE, string.punctuation)
+        if sys.version_info >= (3,):
+            return content
+        else:
+            if isinstance(content, unicode):
+                content = content.encode('utf-8')
+            return content.translate(self.TRANS_TABLE, string.punctuation)
 
     def candiate_words(self, stripped_input):
         return stripped_input.split(' ')

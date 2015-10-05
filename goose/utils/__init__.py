@@ -28,13 +28,13 @@ import re
 import os
 import goose
 import codecs
-import six
 import sys
 
 if sys.version_info < (3,):
     import urlparse
 else:
     from urllib.parse import urlparse
+    import six
 
 
 class BuildURL(object):
@@ -97,8 +97,12 @@ class ParsingCandidate(object):
 class RawHelper(object):
     @classmethod
     def get_parsing_candidate(self, url, raw_html):
-        if isinstance(raw_html, six.text_type):
-            raw_html = raw_html.encode('utf-8')
+        if sys.version_info >= (3,):
+            if isinstance(raw_html, six.text_type):
+                raw_html = raw_html.encode('utf-8')
+        else:
+            if isinstance(raw_html, unicode):
+                raw_html = raw_html.encode('utf-8')
         link_hash = '{0}.{1}'.format(hashlib.md5(raw_html).hexdigest(), time.time())
         return ParsingCandidate(url, link_hash)
 

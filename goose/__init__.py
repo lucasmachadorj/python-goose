@@ -20,6 +20,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from __future__ import absolute_import
 import os
 import platform
 from tempfile import mkstemp
@@ -42,7 +43,7 @@ class Goose(object):
     def extend_config(self):
         if isinstance(self.config, dict):
             config = Configuration()
-            for k, v in self.config.items():
+            for k, v in list(self.config.items()):
                 if hasattr(config, k):
                     setattr(config, k, v)
             self.config = config
