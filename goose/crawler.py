@@ -110,16 +110,18 @@ class Crawler(object):
         self.logPrefix = "crawler:"
 
     def crawl(self, crawl_candidate):
-
         # parser candidate
         parse_candidate = self.get_parse_candidate(crawl_candidate)
 
         # raw html
         raw_html = self.get_html(crawl_candidate, parse_candidate)
-
         if sys.version_info >= (3,):
             if raw_html is not None:
-                raw_html = raw_html.decode('utf8')
+                try:
+                    raw_html = raw_html.decode('utf-8')
+                except UnicodeError:
+                    raw_html = raw_html.decode('iso-8859-1')
+
         if raw_html is None:
             return self.article
 
