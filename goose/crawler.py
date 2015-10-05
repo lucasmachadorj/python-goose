@@ -118,7 +118,8 @@ class Crawler(object):
         raw_html = self.get_html(crawl_candidate, parse_candidate)
 
         if sys.version_info >= (3,):
-            raw_html = raw_html.decode('utf8')
+            if raw_html is not None:
+                raw_html = raw_html.decode('utf8')
         if raw_html is None:
             return self.article
 
