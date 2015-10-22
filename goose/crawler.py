@@ -115,7 +115,12 @@ class Crawler(object):
 
         # raw html
         raw_html = self.get_html(crawl_candidate, parse_candidate)
+
+        # check if python version is greater or equal to 3.0.0
         if sys.version_info >= (3,):
+            # the type of raw_html is bytes, then it's necessary to decode to
+            # 'utf-8', iso-xxxx-x or other. Here we are testing just the two most
+            # commons. 
             if raw_html is not None:
                 try:
                     raw_html = raw_html.decode('utf-8')

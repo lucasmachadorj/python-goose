@@ -21,7 +21,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import lxml.html
-from lxml.html import soupparser
+from . import soupparser
 from lxml import etree
 from copy import deepcopy
 from goose.text import innerTrim
